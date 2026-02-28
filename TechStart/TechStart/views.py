@@ -1,34 +1,207 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+import json
+import re
+from learning.models import LearningPath, Module, Topic, UserProgress, ChatMessage
+from learning.utils import get_ai_tutor_response
+from learning.models import LearningPath, Module, Topic, UserProgress, ChatMessage
 
-# Data for the topics (would come from a database in a real app)
-COMPUTER_TOPICS = [
-    {'name': 'Microsoft Word', 'svg_path': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>', 'color_class': 'bg-blue-500'},
-    {'name': 'Microsoft Excel', 'svg_path': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m3 6V7m-3 10h3M9 7h3m-3 4h3m-3 4h3m3-4h3m-3-4h3m-3-4h3M3 3h18v18H3V3z"></path>', 'color_class': 'bg-green-500'},
-    {'name': 'PowerPoint', 'svg_path': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 12.016a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.498a4 4 0 01-8 0v-1.498m8 0h.01M6 12.016a4 4 0 108 0 4 4 0 00-8 0zm0 0v1.498a4 4 0 018 0v-1.498m-8 0H5.99M18 12.016a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.498a4 4 0 01-8 0v-1.498m8 0h.01M6 12.016a4 4 0 108 0 4 4 0 00-8 0zm0 0v1.498a4 4 0 018 0v-1.498m-8 0H5.99"></path>', 'color_class': 'bg-red-500'},
-    {'name': 'Internet Basics', 'svg_path': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9V3m0 18a9 9 0 009-9m-9 9a9 9 0 00-9-9"></path>', 'color_class': 'bg-yellow-500'},
-]
-PROGRAMMING_TOPICS = [
-    {'name': 'Python', 'svg_path': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path>', 'color_class': 'bg-indigo-500'},
-    {'name': 'Java', 'svg_path': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z"></path>', 'color_class': 'bg-pink-500'},
-    {'name': 'C++', 'svg_path': '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4"></path>', 'color_class': 'bg-purple-500'},
-]
 
 def home_view(request):
     return render(request, 'home.html')
 
-def learning_options_view(request):
-    return render(request, 'learning_options.html')
+# @login_required
+# def learning_options_view(request):
+#     # FETCH DB DATA: Get all modules (Computer Basics, Excel, etc.)
+#     modules = Module.objects.all().order_by('path', 'name')
+#     return render(request, 'learning_options.html', {'modules': modules})
 
-def topic_selection_view(request, path):
-    context = {}
-    if path == 'computer':
-        context['title'] = 'Learn Computer Basics'
-        context['topics'] = COMPUTER_TOPICS
-    elif path == 'programming':
-        context['title'] = 'Learn a Programming Language'
-        context['topics'] = PROGRAMMING_TOPICS
+# @login_required
+# def topic_selection_view(request, module_slug):
+#     # FETCH DB DATA: Get the specific module by its slug
+#     module = get_object_or_404(Module, slug=module_slug)
+    
+#     # Find the first topic to start the lesson
+#     first_topic = module.topics.first()
+    
+#     context = {
+#         'title': module.name,
+#         'description': module.description,
+#         'first_topic': first_topic,
+#         'topics_count': module.topics.count()
+#     }
+#     return render(request, 'topic_selection.html', context)
+
+@login_required
+def chat_view(request, topic_id=None):
+    topic = None
+    chat_history = []
+    toc_topics = []
+    
+    if topic_id:
+        topic = get_object_or_404(Topic, id=topic_id)
+        request.session['current_topic_name'] = topic.name
+        request.session['current_topic_id'] = topic.id
+        
+        chat_history = ChatMessage.objects.filter(user=request.user, topic=topic)
+        
+        # CHANGED: Filter topics by MODULE, not Path
+        toc_topics = Topic.objects.filter(module=topic.module).order_by('order')
+
+    completed_ids = UserProgress.objects.filter(user=request.user, completed=True).values_list('topic_id', flat=True)
+    
+    context = {
+        'current_topic': topic,
+        'chat_history': chat_history,
+        'toc_topics': toc_topics,
+        'completed_ids': completed_ids,
+    }
+    return render(request, 'chat_interface.html', context)
+
+@login_required
+def chat_api(request):
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            user_input = data.get('message', '').strip()
+            
+            topic_name = request.session.get('current_topic_name', 'General')
+            topic_id = request.session.get('current_topic_id')
+            current_state = request.session.get('chat_state', 'teach') 
+            quiz_context = request.session.get('quiz_context', '')
+            
+            # Get User Learning History
+            completed_names = UserProgress.objects.filter(
+                user=request.user, 
+                completed=True
+            ).values_list('topic__name', flat=True)
+            
+            history_string = ""
+            if completed_names:
+                history_string = f"User has already mastered: {', '.join(completed_names)}."
+
+            topic_obj = None
+            if topic_id:
+                topic_obj = Topic.objects.get(id=topic_id)
+
+            # Save User Message
+            ChatMessage.objects.create(
+                user=request.user, 
+                topic=topic_obj, 
+                sender='user', 
+                message=user_input
+            )
+
+            api_mode = "teach"
+            if "quiz" in user_input.lower() or "test" in user_input.lower() or "क्विज़" in user_input:
+                api_mode = "quiz"
+                request.session['chat_state'] = 'awaiting_answer' 
+            elif current_state == 'awaiting_answer':
+                api_mode = "grade"
+                request.session['chat_state'] = 'teach' 
+            else:
+                api_mode = "teach"
+
+            language = 'English'
+            try:
+                language = request.user.profile.preferred_language
+            except:
+                pass
+            
+            full_context = f"{quiz_context} {history_string}".strip()
+            
+            ai_response_text = get_ai_tutor_response(
+                mode=api_mode,
+                topic=topic_name,
+                language=language,
+                user_input=user_input,
+                context=full_context
+            )
+            
+            if api_mode == "quiz":
+                request.session['quiz_context'] = ai_response_text
+                pattern = r'(Correct\s*Answer|Answer|Correct\s*Option|उत्तर)\s*[:\-\)].*'
+                match = re.search(pattern, ai_response_text, re.IGNORECASE | re.DOTALL)
+                if match:
+                    ai_response_text = ai_response_text[:match.start()].strip()
+
+            if api_mode == "grade" and topic_id:
+                text_lower = ai_response_text.lower()
+                is_correct = ("correct" in text_lower or "right" in text_lower or "सही" in ai_response_text)
+                is_negated = ("not correct" in text_lower or "incorrect" in text_lower)
+
+                if is_correct and not is_negated:
+                    try:
+                        UserProgress.objects.update_or_create(
+                            user=request.user,
+                            topic=topic_obj,
+                            defaults={'completed': True, 'quiz_score': 100}
+                        )
+                    except:
+                        pass
+                request.session['quiz_context'] = ""
+
+            ChatMessage.objects.create(
+                user=request.user, 
+                topic=topic_obj, 
+                sender='ai', 
+                message=ai_response_text,
+                is_quiz=(api_mode == "quiz")
+            )
+
+            return JsonResponse({'response': ai_response_text})
+            
+        except Exception as e:
+            return JsonResponse({'error': str(e)}, status=500)
+            
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
+
+@login_required
+def set_language_view(request):
+    if request.method == 'POST':
+        lang = request.POST.get('language')
+        if lang in ['English', 'Hindi', 'Marathi']:
+            profile = request.user.profile
+            profile.preferred_language = lang
+            profile.save()
+    return redirect(request.META.get('HTTP_REFERER', 'home'))
+
+@login_required
+def path_selection_view(request):
+    """
+    Step 1: Display Main Learning Paths (e.g., Computer Skills, Programming)
+    """
+    paths = LearningPath.objects.all()
+    return render(request, 'path_selection.html', {'paths': paths})
+
+@login_required
+def module_selection_view(request, path_slug):
+    """
+    Step 2: Display Modules for the selected Path
+    """
+    learning_path = get_object_or_404(LearningPath, slug=path_slug)
+    modules = Module.objects.filter(path=learning_path).order_by('name')
+    
+    context = {
+        'learning_path': learning_path,
+        'modules': modules
+    }
+    return render(request, 'module_selection.html', context)
+
+# ... topic_selection_view remains the same (Step 3) ...
+@login_required
+def topic_selection_view(request, module_slug):
+    # FETCH DB DATA: Get the specific module by its slug
+    module = get_object_or_404(Module, slug=module_slug)
+    
+    # Find the first topic to start the lesson
+    first_topic = module.topics.first()
+    
+    context = {
+        'title': module.name,
+        'description': module.description,
+        'first_topic': first_topic,
+        'topics_count': module.topics.count()
+    }
     return render(request, 'topic_selection.html', context)
-
-def chat_view(request):
-    return render(request, 'chat_interface.html')
-

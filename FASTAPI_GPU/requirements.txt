@@ -1,0 +1,14 @@
+# --- Web Framework (Stable) ---
+fastapi>=0.112.0
+uvicorn[standard]>=0.30.0
+
+# --- Core AI (Matched for Unsloth) ---
+# Unsloth is most stable with PyTorch 2.4 or 2.5 right now. 
+# Avoid 2.6.0 for now as it has some reported issues with quantization.
+torch==2.5.1
+accelerate>=0.34.0
+transformers>=4.46.0
+
+# --- Fine-Tuning Engine ---
+# This pulls the latest nightly build which includes fixes for 3.11
+unsloth[colab-new] @ git+https://github.com/unslothai/unsloth.git

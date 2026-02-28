@@ -1,0 +1,18 @@
+# --- Web Framework ---
+fastapi>=0.112.0
+uvicorn[standard]>=0.30.0
+
+# --- AI Core ---
+# Torch 2.4+ is recommended for modern Transformers
+torch>=2.4.0
+
+# --- Model Loading ---
+# Transformers 4.46+ is REQUIRED for Qwen 2.5 support
+transformers>=4.46.0
+accelerate>=0.34.0
+
+# --- LoRA Adapters ---
+peft>=0.13.0
+
+# for cpu 
+# pip install torch --index-url https://download.pytorch.org/whl/cpu

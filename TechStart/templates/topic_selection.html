@@ -2,31 +2,47 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block content %}
-<div class="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8 fade-in">
-    <div class="max-w-3xl mx-auto">
-        <div class="text-center">
-            <h1 class="text-4xl font-extrabold text-gray-900">{{ title }}</h1>
-            <p class="mt-3 text-lg text-gray-600">Select a topic below to begin your interactive lesson with the AI Tutor.</p>
-        </div>
+<div class="min-h-screen bg-gray-50 flex items-center justify-center fade-in">
+    <div class="max-w-2xl w-full px-4 sm:px-6 lg:px-8">
+        <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+            <!-- Header Section -->
+            <div class="bg-blue-600 px-8 py-12 text-center">
+                <h1 class="text-4xl font-extrabold text-white mb-2">{{ title }}</h1>
+                <p class="text-blue-100 text-lg">{{ description }}</p>
+            </div>
 
-        <div class="mt-10 bg-white rounded-2xl shadow-xl p-6 space-y-4">
-            {% for topic in topics %}
-            <a href="{% url 'chat' %}" class="flex items-center p-5 rounded-lg group hover:bg-blue-50 transition-all duration-300">
-                <div class="flex-shrink-0 h-12 w-12 flex items-center justify-center rounded-lg {{ topic.color_class }}">
-                    <svg class="w-7 h-7 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        {{ topic.svg_path|safe }}
-                    </svg>
+            <!-- Content Section -->
+            <div class="p-10 text-center">
+                <div class="mb-8">
+                    <!-- Icon -->
+                    <div class="inline-flex items-center justify-center h-20 w-20 rounded-full bg-blue-100 mb-6">
+                        <svg class="h-10 w-10 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+                        </svg>
+                    </div>
+                    <p class="text-gray-600 text-lg">
+                        Ready to dive in? Click the button below to enter the interactive classroom. You will see the full Table of Contents in the sidebar once you start.
+                    </p>
                 </div>
-                <div class="ml-4 flex-grow">
-                    <h3 class="text-lg font-bold text-gray-900">{{ topic.name }}</h3>
-                </div>
-                <div class="ml-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <svg class="w-6 h-6 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-                </div>
-            </a>
-            {% endfor %}
+
+                <!-- Start Button Logic -->
+                {% if first_topic %}
+                    <a href="{% url 'chat_topic' first_topic.id %}" class="inline-flex items-center justify-center px-8 py-4 border border-transparent text-lg font-bold rounded-lg text-white bg-blue-600 hover:bg-blue-700 transition-transform transform hover:-translate-y-1 shadow-lg">
+                        Start Learning Now
+                        <svg class="ml-2 -mr-1 w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                    </a>
+                {% else %}
+                    <p class="text-red-500 italic">No topics found for this module yet.</p>
+                {% endif %}
+            </div>
+            
+            <!-- Footer -->
+            <div class="bg-gray-50 px-8 py-4 border-t border-gray-100 flex justify-between items-center">
+                <span class="text-sm text-gray-500">{{ topics_count }} Lessons Available</span>
+                <!-- Go back to Module Selection, using the first part of the URL logic or hardcoded for now -->
+                <a href="{% url 'path_selection' %}" class="text-sm font-medium text-blue-600 hover:text-blue-500">Change Course</a>
+            </div>
         </div>
     </div>
 </div>
 {% endblock %}
-

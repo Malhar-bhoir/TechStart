@@ -3,30 +3,24 @@
 
 {% block content %}
 <div class="min-h-screen bg-gray-50 flex items-center justify-center fade-in">
-    <div class="max-w-4xl mx-auto text-center p-8">
+    <div class="max-w-6xl mx-auto text-center p-8">
         <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl">Choose Your Learning Adventure</h1>
-        <p class="mt-4 text-xl text-gray-600">Select a path below to begin your journey into the world of technology.</p>
+        <p class="mt-4 text-xl text-gray-600">Select a module below to begin your journey.</p>
         
-        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-            <!-- Learn Computer Basics Card -->
-            <a href="{% url 'topic_selection' path='computer' %}" class="block p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 ease-in-out">
-                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mx-auto">
-                    <svg class="w-9 h-9 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for module in modules %}
+            <a href="{% url 'topic_selection' module_slug=module.slug %}" class="block p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 ease-in-out">
+                <div class="flex items-center justify-center h-16 w-16 rounded-full {{ module.color_class }} mx-auto mb-6">
+                    <!-- Generic icon, or you can use module.icon_svg if you populate it -->
+                    <svg class="w-9 h-9" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
                 </div>
-                <h3 class="mt-5 text-2xl font-bold text-gray-900">Learn Computer Basics</h3>
-                <p class="mt-2 text-gray-600">Master essential skills like using Word, Excel, and browsing the internet safely.</p>
+                <h3 class="mt-2 text-2xl font-bold text-gray-900">{{ module.name }}</h3>
+                <p class="mt-2 text-gray-600">{{ module.description }}</p>
             </a>
-            
-            <!-- Learn Programming Card -->
-            <a href="{% url 'topic_selection' path='programming' %}" class="block p-8 bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 ease-in-out">
-                 <div class="flex items-center justify-center h-16 w-16 rounded-full bg-gray-800 mx-auto">
-                    <svg class="w-9 h-9 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg>
-                </div>
-                <h3 class="mt-5 text-2xl font-bold text-gray-900">Learn Programming</h3>
-                <p class="mt-2 text-gray-600">Start your coding journey with languages like Python, Java, and C++.</p>
-            </a>
+            {% empty %}
+                <p>No modules found. Please run the database script.</p>
+            {% endfor %}
         </div>
     </div>
 </div>
 {% endblock %}
-

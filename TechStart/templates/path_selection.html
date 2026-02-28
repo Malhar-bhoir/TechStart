@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Choose a Path{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 flex items-center justify-center fade-in">
+    <div class="max-w-5xl mx-auto text-center p-8">
+        <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl">Where do you want to start?</h1>
+        <p class="mt-4 text-xl text-gray-600">Select a broad field to explore available courses.</p>
+        
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8 justify-center">
+            {% for path in paths %}
+            <a href="{% url 'module_selection' path.slug %}" class="block p-10 bg-white rounded-2xl shadow-lg hover:shadow-2xl transform hover:-translate-y-2 transition-all duration-300 ease-in-out border border-gray-100">
+                <div class="flex items-center justify-center h-20 w-20 rounded-full bg-indigo-100 mx-auto mb-6">
+                    <svg class="w-10 h-10 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                </div>
+                <h3 class="mt-2 text-3xl font-bold text-gray-900">{{ path.name }}</h3>
+                <p class="mt-4 text-gray-600 text-lg">{{ path.description }}</p>
+                <div class="mt-6 inline-flex items-center text-indigo-600 font-semibold">
+                    View Courses <svg class="w-4 h-4 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </div>
+            </a>
+            {% empty %}
+                <p>No learning paths found. Please run the database script.</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
