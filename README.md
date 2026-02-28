@@ -1,7 +1,7 @@
 # TechStart
 
 
-```markdown
+
 # 📘 AI Tutor Backend (SLM Service)
 
 This is the AI Inference Service for the **TechStart AI Tutor** platform.  
