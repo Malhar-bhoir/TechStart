@@ -95,7 +95,7 @@ cd fastapi_slm
 
 Start the server:
 ```bash
-uvicorn main:app --reload --port 8000
+uvicorn main:app --reload --port 8001
 ```
 
 Wait for logs to confirm:
