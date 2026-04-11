@@ -49,6 +49,17 @@ def chat_view(request, topic_id=None):
         # CHANGED: Filter topics by MODULE, not Path
         toc_topics = Topic.objects.filter(module=topic.module).order_by('order')
 
+    else:
+        # --- NEW: SANDBOX / TRIAL MODE ---
+        # User clicked "Try AI Chatbot" on the home page.
+        # 1. Clear the previous topic memory so it doesn't bleed over!
+        request.session['current_topic_name'] = "Computer Basics and Programming"
+        request.session.pop('current_topic_id', None) # Safely removes the old ID
+        
+        # 2. Fetch "Global" chat history (where topic is completely empty)
+        chat_history = ChatMessage.objects.filter(user=request.user, topic__isnull=True)
+
+
     completed_ids = UserProgress.objects.filter(user=request.user, completed=True).values_list('topic_id', flat=True)
     
     context = {
@@ -93,13 +104,51 @@ def chat_api(request):
                 message=user_input
             )
 
+            # # --- NEW: GREETING INTERCEPTOR ---
+            # # If the user just says a simple hello, respond instantly without calling the AI model.
+            # clean_input = re.sub(r'[^\w\s]', '', user_input.lower()).strip() # removes punctuation
+            # greetings = ['hi', 'hello', 'hey', 'hi there', 'hello there', 'namaste' , 'how are you']
+            
+            # if clean_input in greetings and current_state != 'awaiting_answer':
+            #     greeting_response = f"Hello! 👋 I am your AI Tutor. Let's learn about **{topic_name}**. You can ask me any question, or just say 'Teach me' to begin!"
+                
+            #     # Save AI Response to DB
+            #     ChatMessage.objects.create(
+            #         user=request.user, 
+            #         topic=topic_obj, 
+            #         sender='ai', 
+            #         message=greeting_response,
+            #         is_quiz=False
+            #     )
+            #     return JsonResponse({'response': greeting_response})
+            # # --- END GREETING INTERCEPTOR ---
+
+            # api_mode = "teach"
+            # if "quiz" in user_input.lower() or "test" in user_input.lower() or "क्विज़" in user_input:
+            #     api_mode = "quiz"
+            #     request.session['chat_state'] = 'awaiting_answer' 
+            # elif current_state == 'awaiting_answer':
+            #     api_mode = "grade"
+            #     request.session['chat_state'] = 'teach' 
+            # else:
+            #     api_mode = "teach"
+
+            # 4. Determine Mode (State Machine)
             api_mode = "teach"
+            
+            # Clean the input to check for exact greetings (removes punctuation)
+            clean_input = re.sub(r'[^\w\s]', '', user_input.lower()).strip()
+            greetings = ['hi', 'hello', 'hey', 'hi there', 'hello there', 'namaste', 'नमस्कार']
+
             if "quiz" in user_input.lower() or "test" in user_input.lower() or "क्विज़" in user_input:
                 api_mode = "quiz"
                 request.session['chat_state'] = 'awaiting_answer' 
             elif current_state == 'awaiting_answer':
                 api_mode = "grade"
                 request.session['chat_state'] = 'teach' 
+            elif clean_input in greetings:
+                # NEW: Route greetings to the "chat" mode we added to main.py
+                api_mode = "chat"
             else:
                 api_mode = "teach"
 
@@ -205,3 +254,8 @@ def topic_selection_view(request, module_slug):
         'topics_count': module.topics.count()
     }
     return render(request, 'topic_selection.html', context)
+
+
+def about_view(request):
+    """Renders the About page."""
+    return render(request, 'about.html')

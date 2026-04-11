@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+{% block title %}About TechStart{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-16 px-4 sm:px-6 lg:px-8 fade-in">
+    <div class="max-w-4xl mx-auto">
+        <!-- Hero Section -->
+        <div class="text-center mb-16">
+            <h1 class="text-4xl font-extrabold text-gray-900 sm:text-5xl tracking-tight">
+                About <span class="text-blue-600">TechStart</span>
+            </h1>
+            <p class="mt-4 text-xl text-gray-600 max-w-2xl mx-auto">
+                Empowering beginners to master computer skills and programming through personalized, AI-driven education.
+            </p>
+        </div>
+
+        <!-- Mission Section -->
+        <div class="bg-white rounded-3xl shadow-xl overflow-hidden mb-12">
+            <div class="p-8 sm:p-12">
+                <h2 class="text-2xl font-bold text-gray-900 mb-4 flex items-center gap-3">
+                    <svg class="w-8 h-8 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    Our Mission
+                </h2>
+                <p class="text-lg text-gray-600 leading-relaxed">
+                    TechStart was created to bridge the digital divide. Learning computer basics or a new programming language can be intimidating. Traditional tutorials are static and can't answer your specific doubts. TechStart solves this by providing an interactive, patient, and highly knowledgeable AI Tutor that guides you step-by-step, in your preferred language.
+                </p>
+            </div>
+        </div>
+
+        <!-- Technology Section (Great for your Major Project showcase!) -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12">
+            <div class="bg-white rounded-3xl shadow-lg p-8 hover:shadow-xl transition-shadow border border-gray-100">
+                <div class="w-12 h-12 bg-indigo-100 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Custom Fine-Tuned AI</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Unlike standard chatbots, TechStart is powered by a custom-trained Small Language Model (SLM) based on Qwen 2.5. It has been specifically fine-tuned on thousands of educational Q&A pairs to act as a perfect, patient tutor.
+                </p>
+            </div>
+
+            <div class="bg-white rounded-3xl shadow-lg p-8 hover:shadow-xl transition-shadow border border-gray-100">
+                <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center mb-6">
+                    <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5h12M9 3v2m1.048 9.5A18.022 18.022 0 016.412 9m6.088 9h7M11 21l5-10 5 10M12.751 5C11.783 10.77 8.07 15.61 3 18.129"></path></svg>
+                </div>
+                <h3 class="text-xl font-bold text-gray-900 mb-3">Multilingual Support</h3>
+                <p class="text-gray-600 leading-relaxed">
+                    Education should not be limited by language barriers. Our AI seamlessly understands and teaches in English, Hindi, and Marathi, making technology accessible to a broader audience across India.
+                </p>
+            </div>
+        </div>
+
+        <!-- Call to Action -->
+        <div class="text-center">
+            <a href="{% url 'path_selection' %}" class="inline-flex items-center justify-center px-8 py-4 text-lg font-bold rounded-full text-white bg-blue-600 hover:bg-blue-700 transition-all transform hover:-translate-y-1 shadow-lg">
+                Start Learning Now
+                <svg class="ml-2 -mr-1 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+            </a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -44,7 +44,8 @@ from .views import (
     topic_selection_view, 
     chat_view, 
     chat_api, 
-    set_language_view
+    set_language_view,
+    about_view
 )
 
 urlpatterns = [
@@ -66,4 +67,5 @@ urlpatterns = [
     path('chat/<int:topic_id>/', chat_view, name='chat_topic'),
     path('api/chat/', chat_api, name='chat_api'),
     path('set-language/', set_language_view, name='set_language'),
+    path('about/', about_view, name='about'),
 ]

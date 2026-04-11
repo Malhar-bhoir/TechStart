@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,26 +10,21 @@
         body { font-family: 'Inter', sans-serif; }
         #chat-window { scroll-behavior: smooth; }
         .fade-in-up { animation: fadeInUp 0.5s ease-out; }
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
-
 <body class="bg-gray-100">
     <div class="flex h-screen font-sans">
-        
+        <!-- Sidebar with TOC -->
         <div class="w-80 bg-white border-r border-gray-200 flex flex-col hidden md:flex h-full">
             <div class="p-4 border-b border-gray-200 flex items-center justify-between flex-shrink-0">
                 <a href="{% url 'home' %}" class="flex items-center gap-2">
-                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                    </svg>
+                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
                     <span class="text-xl font-bold text-gray-800">TechStart</span>
                 </a>
             </div>
             
+            <!-- Table of Contents Area -->
             <div class="p-4 flex-grow overflow-y-auto">
                 <div class="bg-blue-50 p-4 rounded-xl text-sm text-blue-800 mb-6 shadow-inner">
                     <p class="font-bold uppercase text-xs tracking-wider opacity-70 mb-1">Current Lesson</p>
@@ -68,63 +62,76 @@
             </div>
         </div>
 
+        <!-- Main chat area -->
         <div class="flex-1 flex flex-col bg-gray-50">
+            <!-- Header for mobile -->
             <div class="md:hidden p-4 bg-white border-b border-gray-200 flex items-center justify-between">
                 <a href="{% url 'home' %}" class="font-bold text-gray-800">TechStart</a>
-                <span class="text-sm text-gray-500">{{ current_topic.name|default:"General" }}</span>
+                <span class="text-sm text-gray-500">{{ current_topic.name|default:"Sandbox" }}</span>
             </div>
 
             <div id="chat-window" class="flex-grow p-6 overflow-y-auto space-y-6">
+                <!-- Initial Welcome Message -->
                 {% if not chat_history %}
                 <div class="flex gap-4 fade-in-up">
                     <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold text-lg text-white flex-shrink-0">AI</div>
                     <div class="bg-white rounded-lg p-4 shadow-md max-w-xl">
                         <p class="text-gray-800">
                             {% if current_topic %}
-                            Hello! I see you want to learn about <strong>{{ current_topic.name }}</strong>. Ask me anything!
+                                Hello! I see you want to learn about <strong>{{ current_topic.name }}</strong>. Ask me anything!
                             {% else %}
-                            Hello! I am your AI Tutor. How can I help you today?
+                                Hello! I am your TechStart AI Tutor. This is the Sandbox! How can I help you today?
                             {% endif %}
                         </p>
                     </div>
                 </div>
                 {% endif %}
 
+                <!-- Loop through History -->
                 {% for msg in chat_history %}
-                {% if msg.sender == 'user' %}
-                <div class="flex gap-4 fade-in-up flex-row-reverse">
-                    <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center font-bold text-lg text-gray-600 flex-shrink-0">U</div>
-                    <div class="bg-blue-600 text-white rounded-lg p-4 max-w-xl">
-                        <p>{{ msg.message }}</p>
-                    </div>
-                </div>
-                {% else %}
-                <div class="flex gap-4 fade-in-up">
-                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold text-lg text-white flex-shrink-0">AI</div>
-                    <div class="bg-white text-gray-800 shadow-md rounded-lg p-4 max-w-xl">
-                        <p>{{ msg.message }}</p>
-                    </div>
-                </div>
-                {% endif %}
+                    {% if msg.sender == 'user' %}
+                        <div class="flex gap-4 fade-in-up flex-row-reverse">
+                            <div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center font-bold text-lg text-gray-600 flex-shrink-0">U</div>
+                            <div class="bg-blue-600 text-white rounded-lg p-4 max-w-xl">
+                                <p class="whitespace-pre-wrap">{{ msg.message }}</p>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="flex gap-4 fade-in-up">
+                            <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold text-lg text-white flex-shrink-0">AI</div>
+                            <div class="bg-white text-gray-800 shadow-md rounded-lg p-4 max-w-xl relative">
+                                <!-- FIX 1: Hidden element stores pure text so quotes don't break JS -->
+                                <div class="hidden raw-message">{{ msg.message }}</div>
+                                <p class="whitespace-pre-wrap">{{ msg.message }}</p>
+                                <!-- Listen Button -->
+                                <div class="mt-2 pt-2 border-t border-gray-100 flex justify-start">
+                                    <button onclick="speakText(this)" class="text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1 font-medium transition-colors">
+                                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
+                                        Listen
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
                 {% endfor %}
             </div>
 
+            <!-- Message input area -->
             <div class="p-6 bg-white border-t border-gray-200">
-                <form id="chat-form" class="flex items-center bg-gray-100 rounded-full p-2 gap-2">
+                <form id="chat-form" class="flex items-center bg-gray-100 rounded-full p-2">
                     {% csrf_token %}
-
-                    <button type="button" id="mic-button" class="p-2 text-gray-500 hover:text-blue-600 transition-colors rounded-full hover:bg-gray-200">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path>
-                        </svg>
+                    <input id="message-input" type="text" placeholder="Type your question..." class="flex-grow bg-transparent text-gray-800 placeholder-gray-500 focus:outline-none px-4" autocomplete="off">
+                    
+                    <!-- Mic Button -->
+                    <!-- <button id="mic-button" class="p-2 text-gray-500 hover:text-blue-600 focus:outline-none transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-14 0m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
+                    </button> -->
+                    <button type="button" id="mic-button" class="p-2 text-gray-500 hover:text-blue-600 focus:outline-none transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-14 0m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"></path></svg>
                     </button>
 
-                    <input id="message-input" type="text" placeholder="Type your question..." class="flex-grow bg-transparent text-gray-800 placeholder-gray-500 focus:outline-none px-2" autocomplete="off">
-
-                    <button type="submit" id="send-button" class="p-2 text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none transition-colors">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                        </svg>
+                    <button type="submit" id="send-button" class="p-2 text-white bg-blue-600 rounded-full hover:bg-blue-700 focus:outline-none transition-colors ml-2">
+                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path></svg>
                     </button>
                 </form>
             </div>
@@ -132,39 +139,70 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const chatWindow = document.getElementById('chat-window');
             const chatForm = document.getElementById('chat-form');
             const messageInput = document.getElementById('message-input');
             const micButton = document.getElementById('mic-button');
-
-            // --- Language & Topic Setup ---
+            
+            // --- 1. LANGUAGE SETUP ---
             const userLangPreference = "{{ user.profile.preferred_language|default:'English' }}";
-            const langCodeMap = { 'English': 'en-US', 'Hindi': 'hi-IN', 'Marathi': 'mr-IN' };
-            const currentLangCode = langCodeMap[userLangPreference] || 'en-US';
-            const currentTopic = "{{ current_topic.name|default:''|escapejs }}";
+            const langCodeMap = { 'English': 'en-IN', 'Hindi': 'hi-IN', 'Marathi': 'mr-IN' };
+            const currentLangCode = langCodeMap[userLangPreference] || 'en-IN';
+
+            const currentTopic = "{{ current_topic.name|default:''|escapejs }}"; 
 
             function scrollToBottom() {
-                if (chatWindow) {
-                    chatWindow.scrollTop = chatWindow.scrollHeight;
-                }
+                if (chatWindow) chatWindow.scrollTop = chatWindow.scrollHeight;
             }
 
-            // --- Text to Speech (TTS) ---
-            window.speakText = function (text) {
-                if ('speechSynthesis' in window) {
-                    window.speechSynthesis.cancel();
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.lang = currentLangCode;
-                    utterance.rate = 1.0;
-                    utterance.pitch = 1.0;
-                    window.speechSynthesis.speak(utterance);
-                } else {
+            // --- 2. TEXT TO SPEECH (TTS) WITH VOICE MATCHING ---
+            let availableVoices = [];
+            
+            // Pre-load voices for the browser
+            function loadVoices() {
+                availableVoices = window.speechSynthesis.getVoices();
+            }
+            if (window.speechSynthesis.onvoiceschanged !== undefined) {
+                window.speechSynthesis.onvoiceschanged = loadVoices;
+            }
+            loadVoices(); // Initial trigger
+
+            // FIX: Function now takes the button element, not the text string
+            window.speakText = function(btnElement) {
+                if (!('speechSynthesis' in window)) {
                     alert("Text-to-speech is not supported in this browser.");
+                    return;
                 }
+
+                // Get the closest AI message container and extract pure text
+                const container = btnElement.closest('.bg-white');
+                const rawText = container.querySelector('.raw-message').innerText;
+
+                window.speechSynthesis.cancel(); 
+                const utterance = new SpeechSynthesisUtterance(rawText);
+                utterance.lang = currentLangCode; 
+
+                // FIX 2: Force the browser to use a local Voice that matches the language
+                if (availableVoices.length > 0) {
+                    let matchingVoice = availableVoices.find(v => v.lang === currentLangCode || v.lang.startsWith(currentLangCode.split('-')[0]));
+                    
+                    // Fallback: If Marathi (mr) is not found, fallback to Hindi (hi) which can read Devanagari script.
+                    if (currentLangCode === 'mr-IN' && !matchingVoice) {
+                        matchingVoice = availableVoices.find(v => v.lang.startsWith('hi'));
+                    }
+
+                    if (matchingVoice) {
+                        utterance.voice = matchingVoice;
+                    }
+                }
+
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+                window.speechSynthesis.speak(utterance);
             };
 
-            // --- Speech to Text (STT) ---
+            // --- 3. SPEECH TO TEXT (STT) ---
             if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
                 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
                 const recognition = new SpeechRecognition();
@@ -172,19 +210,19 @@
                 recognition.lang = currentLangCode;
                 recognition.interimResults = false;
 
-                recognition.onstart = function () {
+                recognition.onstart = function() {
                     micButton.classList.remove('text-gray-500');
                     micButton.classList.add('text-red-600', 'animate-pulse');
                     messageInput.placeholder = "Listening...";
                 };
 
-                recognition.onend = function () {
+                recognition.onend = function() {
                     micButton.classList.remove('text-red-600', 'animate-pulse');
                     micButton.classList.add('text-gray-500');
                     messageInput.placeholder = "Type your question...";
                 };
 
-                recognition.onresult = function (event) {
+                recognition.onresult = function(event) {
                     const transcript = event.results[0][0].transcript;
                     messageInput.value = transcript;
                     messageInput.focus();
@@ -192,7 +230,7 @@
 
                 if (micButton) {
                     micButton.addEventListener('click', (e) => {
-                        e.preventDefault();
+                        e.preventDefault(); 
                         recognition.start();
                     });
                 }
@@ -200,47 +238,53 @@
                 if (micButton) micButton.style.display = 'none';
             }
 
-            // --- Secure Append Message ---
+            // Helper to safely escape HTML to prevent XSS issues
+            function escapeHTML(str) {
+                return str.replace(/[&<>'"]/g, 
+                    tag => ({
+                        '&': '&amp;',
+                        '<': '&lt;',
+                        '>': '&gt;',
+                        "'": '&#39;',
+                        '"': '&quot;'
+                    }[tag] || tag)
+                );
+            }
+
             function appendMessage(text, sender) {
                 const div = document.createElement('div');
                 div.className = `flex gap-4 fade-in-up ${sender === 'user' ? 'flex-row-reverse' : ''}`;
-
-                let avatarHtml, bubbleClass;
-
+                
+                let avatar, bubbleClass, extraControls = '';
+                const safeText = escapeHTML(text);
+                
                 if (sender === 'user') {
-                    avatarHtml = `<div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center font-bold text-lg text-gray-600 flex-shrink-0">U</div>`;
+                    avatar = `<div class="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center font-bold text-lg text-gray-600 flex-shrink-0">U</div>`;
                     bubbleClass = "bg-blue-600 text-white";
                 } else {
-                    avatarHtml = `<div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold text-lg text-white flex-shrink-0">AI</div>`;
+                    avatar = `<div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center font-bold text-lg text-white flex-shrink-0">AI</div>`;
                     bubbleClass = "bg-white text-gray-800 shadow-md";
-                }
-
-                // 1. Create structure
-                const contentStructure = `
-                    ${avatarHtml}
-                    <div class="${bubbleClass} rounded-lg p-4 max-w-xl message-content-wrapper">
-                        <p class="message-text"></p>
-                    </div>
-                `;
-                div.innerHTML = contentStructure;
-
-                // 2. Inject text safely
-                div.querySelector('.message-text').textContent = text;
-
-                // 3. Add Listen button for AI
-                if (sender !== 'user') {
-                    const safeText = text.replace(/"/g, "&quot;").replace(/'/g, "\\'");
-                    const listenBtnHtml = `
+                    
+                    // FIX: Passes 'this' instead of the string.
+                    extraControls = `
                         <div class="mt-2 pt-2 border-t border-gray-100 flex justify-start">
-                            <button onclick="speakText('${safeText}')" class="text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1 font-medium transition-colors">
+                            <button onclick="speakText(this)" class="text-xs text-blue-500 hover:text-blue-700 flex items-center gap-1 font-medium transition-colors">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path></svg>
                                 Listen
                             </button>
                         </div>
                     `;
-                    div.querySelector('.message-content-wrapper').insertAdjacentHTML('beforeend', listenBtnHtml);
                 }
 
+                div.innerHTML = `
+                    ${avatar}
+                    <div class="${bubbleClass} rounded-lg p-4 max-w-xl relative">
+                        <div class="hidden raw-message">${safeText}</div>
+                        <p class="whitespace-pre-wrap">${safeText}</p>
+                        ${extraControls}
+                    </div>
+                `;
+                
                 chatWindow.appendChild(div);
                 scrollToBottom();
             }
@@ -261,6 +305,32 @@
                 scrollToBottom();
             }
 
+            // --- AUTO-TEACH LOGIC ---
+            const hasHistory = {% if chat_history %}true{% else %}false{% endif %};
+            const isSandbox = {% if current_topic %}false{% else %}true{% endif %};
+            
+            if (currentTopic && !hasHistory && !isSandbox) {
+                setTimeout(() => {
+                    const autoMessage = "Teach me about " + currentTopic;
+                    appendMessage(autoMessage, 'user');
+                    appendLoading();
+                    
+                    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+                    fetch("{% url 'chat_api' %}", {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
+                        body: JSON.stringify({ message: autoMessage, topic: currentTopic })
+                    })
+                    .then(r => r.json())
+                    .then(data => {
+                        const loader = document.getElementById('loading-indicator');
+                        if (loader) loader.remove();
+                        if (data.response) appendMessage(data.response, 'ai');
+                    });
+                }, 500); 
+            }
+
+            // Attach event listener to the form
             if (chatForm) {
                 chatForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
@@ -275,14 +345,21 @@
                         const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
                         const response = await fetch("{% url 'chat_api' %}", {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
-                            body: JSON.stringify({ message: message, topic: currentTopic })
+                            headers: {
+                                'Content-Type': 'application/json',
+                                'X-CSRFToken': csrfToken
+                            },
+                            body: JSON.stringify({
+                                message: message,
+                                topic: currentTopic || "General Sandbox"
+                            })
                         });
 
                         const data = await response.json();
+                        
                         const loadingIndicator = document.getElementById('loading-indicator');
                         if (loadingIndicator) loadingIndicator.remove();
-
+                        
                         if (data.response) {
                             appendMessage(data.response, 'ai');
                         } else {
@@ -293,46 +370,12 @@
                         const loadingIndicator = document.getElementById('loading-indicator');
                         if (loadingIndicator) loadingIndicator.remove();
                         appendMessage("Network error. Please try again.", 'ai');
+                        console.error(error);
                     }
                 });
             }
-
-            // --- AUTO-TEACH LOGIC (New Integration) ---
-            const hasHistory = {% if chat_history %}true{% else %}false{% endif %};
-            const topicName = "{{ current_topic.name|default:''|escapejs }}";
-
-            if (topicName && !hasHistory) {
-                setTimeout(() => {
-                    // Don't interrupt if user already started typing
-                    if (messageInput && messageInput.value.trim() !== "") return;
-
-                    const autoMessage = "Teach me about " + topicName;
-                    
-                    // UI Update
-                    appendMessage(autoMessage, 'user');
-                    appendLoading();
-                    
-                    // API Call
-                    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
-                    fetch("{% url 'chat_api' %}", {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json', 'X-CSRFToken': csrfToken },
-                        body: JSON.stringify({ message: autoMessage, topic: topicName })
-                    })
-                    .then(r => r.json())
-                    .then(data => {
-                        const loader = document.getElementById('loading-indicator');
-                        if (loader) loader.remove();
-                        if (data.response) appendMessage(data.response, 'ai');
-                    })
-                    .catch(err => {
-                        const loader = document.getElementById('loading-indicator');
-                        if (loader) loader.remove();
-                    });
-                }, 500); 
-            }
-
-            window.onload = scrollToBottom;
+            
+            scrollToBottom();
         });
     </script>
 </body>
