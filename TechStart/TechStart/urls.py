@@ -44,6 +44,7 @@ from .views import (
     topic_selection_view, 
     chat_view, 
     chat_api, 
+    dashboard_view,
     set_language_view,
     about_view
 )
@@ -52,7 +53,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('accounts/', include('allauth.urls')),
     path('', home_view, name='home'),
-    
+    path('dashboard/', dashboard_view, name='dashboard'),
     # Step 1: Select a Learning Path (e.g., Computer vs Programming)
     # Replaces the old 'learning_options' route
     path('start/', path_selection_view, name='path_selection'),

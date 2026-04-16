@@ -6,90 +6,114 @@
 
 <!-- Hero Section -->
 <section class="bg-blue-600 text-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
-        <div class="grid md:grid-cols-2 gap-8 items-center">
-            <div class="text-center md:text-left fade-in">
-                <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">{{ text.hero_title }}</h1>
-                <p class="mt-4 text-lg md:text-xl text-blue-200 max-w-xl mx-auto md:mx-0">{{ text.hero_subtitle }}</p>
-                
-                <!-- Updated Buttons to Trigger Modal if Not Logged In -->
-                <div class="mt-8 flex justify-center md:justify-start space-x-4">
-                    <a href="{% url 'path_selection' %}" 
-                       class="bg-white text-blue-600 font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-blue-50 transition-colors duration-300"
-                       {% if not user.is_authenticated %}onclick="event.preventDefault(); toggleLoginModal();"{% endif %}>
-                       Start Learning
-                    </a>
-                    <a href="{% url 'chat' %}" 
-                       class="bg-blue-500 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-blue-400 transition-colors duration-300"
-                       {% if not user.is_authenticated %}onclick="event.preventDefault(); toggleLoginModal();"{% endif %}>
-                       Try the AI Chatbot
-                    </a>
-                </div>
-            </div>
-            <div class="hidden md:block">
-                <!-- Hero Image Illustration -->
-                <svg class="w-full h-auto" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
-                    <rect x="150" y="50" width="300" height="200" rx="15" fill="#FFFFFF"/>
-                    <rect x="165" y="65" width="20" height="20" rx="10" fill="#E0E7FF"/>
-                    <rect x="200" y="70" width="120" height="10" rx="5" fill="#C7D2FE"/>
-                    <rect x="180" y="100" width="240" height="130" rx="10" fill="#EFF6FF"/>
-                    <circle cx="210" cy="120" r="8" fill="#60A5FA"/>
-                    <rect x="230" y="115" width="100" height="10" rx="5" fill="#93C5FD"/>
-                    <path d="M50 120 C 70 100, 130 100, 150 120 L 150 180 C 130 200, 70 200, 50 180 Z" fill="#FFFFFF" stroke="#E0E7FF" stroke-width="5"/>
-                    <rect x="70" y="140" width="60" height="8" rx="4" fill="#C7D2FE"/>
-                    <rect x="70" y="155" width="40" height="8" rx="4" fill="#E0E7FF"/>
-                    <path d="M100 180 C 120 160, 180 160, 200 180 L 200 240 C 180 260, 120 260, 100 240 Z" fill="#FFFFFF" stroke="#E0E7FF" stroke-width="5" transform="translate(10, -30)"/>
-                    <circle cx="120" cy="185" r="5" fill="#60A5FA" transform="translate(10, -30)"/>
-                    <path d="M135 183 h 40 v 4 h -40 z" fill="#93C5FD" transform="translate(10, -30)"/>
-                </svg>
-            </div>
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 md:py-28">
+    <div class="grid md:grid-cols-2 gap-8 items-center">
+      <div class="text-center md:text-left fade-in">
+        <h1 class="text-4xl md:text-6xl font-extrabold leading-tight">{{ text.hero_title }}</h1>
+        <p class="mt-4 text-lg md:text-xl text-blue-200 max-w-xl mx-auto md:mx-0">{{ text.hero_subtitle }}</p>
+
+        <!-- Buttons (open login modal if not authenticated) -->
+        <div class="mt-8 flex justify-center md:justify-start space-x-4">
+          <a href="{% url 'path_selection' %}"
+             class="bg-white text-blue-600 font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-blue-50 transition-colors duration-300"
+             {% if not user.is_authenticated %}onclick="event.preventDefault(); toggleLoginModal();"{% endif %}>
+            Start Learning
+          </a>
+          <a href="{% url 'chat' %}"
+             class="bg-blue-500 text-white font-semibold px-8 py-3 rounded-lg shadow-md hover:bg-blue-400 transition-colors duration-300"
+             {% if not user.is_authenticated %}onclick="event.preventDefault(); toggleLoginModal();"{% endif %}>
+            Try the AI Chatbot
+          </a>
         </div>
+      </div>
+
+      <div class="hidden md:block">
+        <!-- Hero Illustration (kept minimal / unchanged) -->
+        <svg class="w-full h-auto" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <rect x="150" y="50" width="300" height="200" rx="15" fill="#FFFFFF"/>
+          <rect x="165" y="65" width="20" height="20" rx="10" fill="#E0E7FF"/>
+          <rect x="200" y="70" width="120" height="10" rx="5" fill="#C7D2FE"/>
+          <rect x="180" y="100" width="240" height="130" rx="10" fill="#EFF6FF"/>
+          <circle cx="210" cy="120" r="8" fill="#60A5FA"/>
+          <rect x="230" y="115" width="100" height="10" rx="5" fill="#93C5FD"/>
+          <path d="M50 120 C 70 100, 130 100, 150 120 L 150 180 C 130 200, 70 200, 50 180 Z" fill="#FFFFFF" stroke="#E0E7FF" stroke-width="5"/>
+          <rect x="70" y="140" width="60" height="8" rx="4" fill="#C7D2FE"/>
+          <rect x="70" y="155" width="40" height="8" rx="4" fill="#E0E7FF"/>
+          <path d="M100 180 C 120 160, 180 160, 200 180 L 200 240 C 180 260, 120 260, 100 240 Z" fill="#FFFFFF" stroke="#E0E7FF" stroke-width="5" transform="translate(10, -30)"/>
+          <circle cx="120" cy="185" r="5" fill="#60A5FA" transform="translate(10, -30)"/>
+          <path d="M135 183 h 40 v 4 h -40 z" fill="#93C5FD" transform="translate(10, -30)"/>
+        </svg>
+      </div>
     </div>
+  </div>
 </section>
 
 <!-- Features Section -->
 <section class="py-20 bg-white">
-    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-            
-            <!-- Feature 1: Conversational Learning -->
-            <div class="bg-gray-50 p-6 rounded-xl text-center shadow-sm hover:shadow-lg transition-shadow duration-300">
-                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mx-auto">
-                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path></svg>
-                </div>
-                <h3 class="mt-4 text-xl font-bold text-gray-800">{{ text.feat_conv_title }}</h3>
-                <p class="mt-2 text-gray-600">{{ text.feat_conv_desc }}</p>
-            </div>
-            
-            <!-- Feature 2: Personalized Lessons -->
-            <div class="bg-gray-50 p-6 rounded-xl text-center shadow-sm hover:shadow-lg transition-shadow duration-300">
-                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mx-auto">
-                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
-                </div>
-                <h3 class="mt-4 text-xl font-bold text-gray-800">{{ text.feat_pers_title }}</h3>
-                <p class="mt-2 text-gray-600">{{ text.feat_pers_desc }}</p>
-            </div>
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <!-- Use items-stretch so all grid cells match height -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 items-stretch">
 
-            <!-- Feature 3: Quiz & Practice -->
-            <div class="bg-gray-50 p-6 rounded-xl text-center shadow-sm hover:shadow-lg transition-shadow duration-300">
-                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mx-auto">
-                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path></svg>
-                </div>
-                <h3 class="mt-4 text-xl font-bold text-gray-800">{{ text.feat_quiz_title }}</h3>
-                <p class="mt-2 text-gray-600">{{ text.feat_quiz_desc }}</p>
-            </div>
-
-            <!-- Feature 4: Track Progress -->
-            <div class="bg-gray-50 p-6 rounded-xl text-center shadow-sm hover:shadow-lg transition-shadow duration-300">
-                <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mx-auto">
-                   <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
-                </div>
-                <h3 class="mt-4 text-xl font-bold text-gray-800">{{ text.feat_prog_title }}</h3>
-                <p class="mt-2 text-gray-600">{{ text.feat_prog_desc }}</p>
-            </div>
+      <!-- Feature 1: Conversational Learning (non-clickable) -->
+      <div class="bg-gray-50 p-6 rounded-xl text-center shadow-sm hover:shadow-lg transition-shadow duration-300 h-full flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mx-auto">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+            </svg>
+          </div>
+          <h3 class="mt-4 text-xl font-bold text-gray-800">{{ text.feat_conv_title }}</h3>
+          <p class="mt-2 text-gray-600">{{ text.feat_conv_desc }}</p>
         </div>
+      </div>
+
+      <!-- Feature 2: Personalized Lessons (non-clickable) -->
+      <div class="bg-gray-50 p-6 rounded-xl text-center shadow-sm hover:shadow-lg transition-shadow duration-300 h-full flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mx-auto">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+            </svg>
+          </div>
+          <h3 class="mt-4 text-xl font-bold text-gray-800">{{ text.feat_pers_title }}</h3>
+          <p class="mt-2 text-gray-600">{{ text.feat_pers_desc }}</p>
+        </div>
+      </div>
+
+      <!-- Feature 3: Quiz & Practice (non-clickable) -->
+      <div class="bg-gray-50 p-6 rounded-xl text-center shadow-sm hover:shadow-lg transition-shadow duration-300 h-full flex flex-col justify-between">
+        <div>
+          <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mx-auto">
+            <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"></path>
+            </svg>
+          </div>
+          <h3 class="mt-4 text-xl font-bold text-gray-800">{{ text.feat_quiz_title }}</h3>
+          <p class="mt-2 text-gray-600">{{ text.feat_quiz_desc }}</p>
+        </div>
+      </div>
+
+      <!-- Feature 4: Track Progress (clickable entire card) -->
+      <a href="{% url 'dashboard' %}" class="block h-full">
+        <div class="bg-gray-50 p-6 rounded-xl text-center shadow-sm hover:shadow-lg transition-shadow duration-300 h-full flex flex-col justify-between">
+          <div>
+            <div class="flex items-center justify-center h-16 w-16 rounded-full bg-blue-100 mx-auto">
+              <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+              </svg>
+            </div>
+            <h3 class="mt-4 text-xl font-bold text-gray-800">{{ text.feat_prog_title }}</h3>
+            <p class="mt-2 text-gray-600">{{ text.feat_prog_desc }}</p>
+          </div>
+        </div>
+      </a>
+
     </div>
+  </div>
 </section>
 
 {% endblock %}
-

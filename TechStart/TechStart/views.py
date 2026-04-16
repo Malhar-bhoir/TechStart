@@ -6,6 +6,7 @@ import re
 from learning.models import LearningPath, Module, Topic, UserProgress, ChatMessage
 from learning.utils import get_ai_tutor_response
 from learning.models import LearningPath, Module, Topic, UserProgress, ChatMessage
+from django.db.models import Avg
 
 
 def home_view(request):
@@ -259,3 +260,42 @@ def topic_selection_view(request, module_slug):
 def about_view(request):
     """Renders the About page."""
     return render(request, 'about.html')
+
+@login_required
+def dashboard_view(request):
+    """
+    Renders the Student Analytics Dashboard with progress and metrics.
+    """
+    # 1. Get total topics available
+    all_topics = Topic.objects.all().order_by('module__path', 'module', 'order')
+    total_topics = all_topics.count()
+
+    # 2. Get user's completed topics
+    user_progress = UserProgress.objects.filter(user=request.user, completed=True)
+    completed_count = user_progress.count()
+    completed_topic_ids = list(user_progress.values_list('topic_id', flat=True))
+
+    # 3. Calculate Completion Percentage
+    completion_percentage = 0
+    if total_topics > 0:
+        completion_percentage = int((completed_count / total_topics) * 100)
+
+    # 4. Calculate Average Quiz Score (Accuracy)
+    avg_score_data = user_progress.aggregate(Avg('quiz_score'))
+    avg_score = avg_score_data['quiz_score__avg']
+    avg_score = int(avg_score) if avg_score else 0
+
+    # 5. Get Recent Achievements (Last 5 completed)
+    # Using -id as a safe fallback for chronological order
+    recent_progress = user_progress.select_related('topic').order_by('-id')[:5]
+
+    context = {
+        'total_topics': total_topics,
+        'completed_count': completed_count,
+        'completion_percentage': completion_percentage,
+        'avg_score': avg_score,
+        'all_topics': all_topics,
+        'completed_topic_ids': completed_topic_ids,
+        'recent_progress': recent_progress,
+    }
+    return render(request, 'dashboard.html', context)

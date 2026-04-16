@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% block title %}My Progress Dashboard{% endblock %}
+
+{% block content %}
+<div class="min-h-screen bg-gray-50 py-10 px-4 sm:px-6 lg:px-8 fade-in">
+    <div class="max-w-6xl mx-auto">
+        
+        <!-- Header -->
+        <div class="mb-10">
+            <h1 class="text-3xl font-extrabold text-gray-900">Welcome back, {{ user.username }}!</h1>
+            <p class="mt-2 text-gray-600">Here are your advanced learning metrics and progress overview.</p>
+        </div>
+
+        <!-- Top Stats Row -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+            <!-- Stat Card 1: Completion -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center">
+                <div class="w-14 h-14 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 mr-4">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4M7.835 4.697a3.42 3.42 0 001.946-.806 3.42 3.42 0 014.438 0 3.42 3.42 0 001.946.806 3.42 3.42 0 013.138 3.138 3.42 3.42 0 00.806 1.946 3.42 3.42 0 010 4.438 3.42 3.42 0 00-.806 1.946 3.42 3.42 0 01-3.138 3.138 3.42 3.42 0 00-1.946.806 3.42 3.42 0 01-4.438 0 3.42 3.42 0 00-1.946-.806 3.42 3.42 0 01-3.138-3.138 3.42 3.42 0 00-.806-1.946 3.42 3.42 0 010-4.438 3.42 3.42 0 00.806-1.946 3.42 3.42 0 013.138-3.138z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">Overall Progress</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ completion_percentage }}%</p>
+                </div>
+            </div>
+
+            <!-- Stat Card 2: Topics Mastered -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center">
+                <div class="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center text-green-600 mr-4">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">Lessons Mastered</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ completed_count }} <span class="text-lg text-gray-400 font-normal">/ {{ total_topics }}</span></p>
+                </div>
+            </div>
+
+            <!-- Stat Card 3: Quiz Accuracy -->
+            <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 flex items-center">
+                <div class="w-14 h-14 rounded-full bg-purple-100 flex items-center justify-center text-purple-600 mr-4">
+                    <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                </div>
+                <div>
+                    <p class="text-sm font-medium text-gray-500 uppercase tracking-wide">Quiz Accuracy</p>
+                    <p class="text-3xl font-bold text-gray-900">{{ avg_score }}%</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <!-- Main Content Area -->
+            <div class="lg:col-span-2 space-y-8">
+                
+                <!-- GITHUB STYLE HEATMAP -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                    <div class="flex justify-between items-center mb-6">
+                        <h2 class="text-xl font-bold text-gray-900">Curriculum Heatmap</h2>
+                        <span class="text-xs text-gray-500 bg-gray-100 px-3 py-1 rounded-full">Hover to see topics</span>
+                    </div>
+                    
+                    <!-- Grid of squares -->
+                    <div class="flex flex-wrap gap-2">
+                        {% for topic in all_topics %}
+                            {% if topic.id in completed_topic_ids %}
+                                <!-- Completed Square (Green) -->
+                                <div class="w-5 h-5 rounded-sm bg-green-500 hover:bg-green-600 transition-colors cursor-pointer" title="Mastered: {{ topic.name }}"></div>
+                            {% else %}
+                                <!-- Uncompleted Square (Gray) -->
+                                <div class="w-5 h-5 rounded-sm bg-gray-200 hover:bg-gray-300 transition-colors cursor-pointer" title="Locked: {{ topic.name }}"></div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mt-6 flex items-center gap-4 text-sm text-gray-500">
+                        <span>Less</span>
+                        <div class="flex gap-1">
+                            <div class="w-4 h-4 rounded-sm bg-gray-200"></div>
+                            <div class="w-4 h-4 rounded-sm bg-green-200"></div>
+                            <div class="w-4 h-4 rounded-sm bg-green-500"></div>
+                            <div class="w-4 h-4 rounded-sm bg-green-700"></div>
+                        </div>
+                        <span>More</span>
+                    </div>
+                </div>
+
+                <!-- Progress Bar Detail -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Course Completion</h2>
+                    <div class="w-full bg-gray-200 rounded-full h-4 mb-2">
+                        <div class="bg-blue-600 h-4 rounded-full transition-all duration-1000 ease-out" style="width: {{ completion_percentage }}%"></div>
+                    </div>
+                    <p class="text-sm text-gray-500 text-right">You are {{ completion_percentage }}% of the way there!</p>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="space-y-8">
+                <!-- Recent Achievements -->
+                <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                    <h2 class="text-xl font-bold text-gray-900 mb-6">Recent Achievements</h2>
+                    {% if recent_progress %}
+                        <div class="space-y-5">
+                            {% for progress in recent_progress %}
+                                <div class="flex items-start">
+                                    <div class="flex-shrink-0 w-8 h-8 rounded-full bg-green-100 flex items-center justify-center mt-1">
+                                        <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                                    </div>
+                                    <div class="ml-4">
+                                        <p class="text-sm font-bold text-gray-900">{{ progress.topic.name }}</p>
+                                        <p class="text-xs text-gray-500 mt-1">Score: {{ progress.quiz_score }}%</p>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <p class="text-gray-500 text-sm italic">You haven't completed any topics yet. Start learning to earn badges!</p>
+                    {% endif %}
+                </div>
+
+                <!-- Action Button -->
+                <a href="{% url 'path_selection' %}" class="block w-full text-center px-6 py-4 border border-transparent text-base font-medium rounded-xl text-white bg-blue-600 hover:bg-blue-700 shadow-md transition-colors">
+                    Continue Learning
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
