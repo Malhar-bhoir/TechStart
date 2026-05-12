@@ -1,6 +1,6 @@
 
 
-
+---
 
 ```markdown
 # 🚀 TechStart: AI-Powered Interactive Learning Management System
@@ -204,12 +204,7 @@ This project was developed for educational purposes as a Major University Projec
 ---
 
 
-
-Empowering beginners to master technology through personalized, AI-driven education.
 ```
 
 ---
 
-This updated README keeps all the **new LMS details** while integrating the **old backend-specific gems** (modes, API usage, troubleshooting). It’s now comprehensive and GitHub‑ready.  
-
-Would you like me to also craft a **shorter “About” section** for the repo front page (like a tagline + badges) so visitors instantly see what TechStart is without scrolling?
