@@ -2,7 +2,7 @@
 
 ---
 
-```markdown
+
 # 🚀 TechStart: AI-Powered Interactive Learning Management System
 
 TechStart is a next-generation, AI-driven Learning Management System (LMS) developed as a Major Project.  
