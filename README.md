@@ -3,7 +3,7 @@
 ---
 
 
-# 🚀 TechStart: AI-Powered Interactive Learning Management System
+# 🚀 TechStart: AI-Powered Interactive Learning
 
 TechStart is a next-generation, AI-driven Learning Management System (LMS) developed as a Major Project.  
 It bridges the gap between theoretical learning and practical execution. Unlike traditional platforms, TechStart features a custom Fine-Tuned Small Language Model (SLM), browser-based OS/Office simulations, and in-browser coding IDEs to allow users to practice real-world skills instantly.
@@ -200,7 +200,7 @@ Or open Swagger UI:
 
 ## 📝 License
 This project was developed for educational purposes as a Major University Project.
-
+MIT License 
 ---
 
 
