@@ -1,112 +1,142 @@
-# TechStart
 
-
-
-# 📘 AI Tutor Backend (SLM Service)
-
-This is the AI Inference Service for the **TechStart AI Tutor** platform.  
-It uses **FastAPI** to serve a fine‑tuned **Small Language Model (SLM)** based on **Qwen 2.5 3B**.  
-The model is trained to act as a **Tutor**, **Quiz Master**, and **Grader** in three languages: **English, Hindi, and Marathi**.
 
 ---
 
-## 🚀 Features
-- **3 Distinct Modes**
+```markdown
+# 🚀 TechStart: AI-Powered Interactive Learning Management System
+
+TechStart is a next-generation, AI-driven Learning Management System (LMS) developed as a Major Project.  
+It bridges the gap between theoretical learning and practical execution. Unlike traditional platforms, TechStart features a custom Fine-Tuned Small Language Model (SLM), browser-based OS/Office simulations, and in-browser coding IDEs to allow users to practice real-world skills instantly.
+
+---
+
+## ✨ Key Features
+
+### 🧠 Custom AI Tutor (FastAPI + Hugging Face)
+- Local SLM Integration: Powered by an open-weight model (e.g., Qwen 2.5) running on a dedicated FastAPI server.
+- Auto-Hardware Detection: Automatically detects and utilizes NVIDIA CUDA GPUs for 10x–50x faster inference, with CPU fallback.
+- Context-Aware Chat: The AI knows exactly which topic you are on and grades your practical tasks.
+- **3 Distinct Modes**:
   - `teach`: Explains concepts simply (Teacher Persona).
-  - `quiz`: Generates multiple‑choice questions (Quiz Master Persona).
+  - `quiz`: Generates multiple-choice questions (Quiz Master Persona).
   - `grade`: Evaluates user answers and provides feedback (Grader Persona).
-- **Multi‑Language Support**: English, Hindi (Devanagari), Marathi (Devanagari).
-- **Optimized Inference**: Runs on CPU (via `peft/transformers`) or GPU (via `unsloth`).
-- **Voice‑Ready**: Designed to work with TTS (Text‑to‑Speech) and STT (Speech‑to‑Text) pipelines.
+
+### 🌐 Multilingual Accessibility
+- Text-to-Speech (TTS): Native browser voice synthesis with fallback algorithms. Auto-detects Devanagari script to switch to Hindi/Marathi voices.
+- Speech-to-Text (STT): Voice-activated input for hands-free learning.
+- UI Translations: Seamlessly switch between English, Hindi, and Marathi.
+
+### 🖥️ Web-Based Practical Simulations (Zero Install Required)
+- **Windows OS Simulator**: Context menus, folder creation, file explorer tasks (Ctrl+C, Ctrl+V, Delete).
+- **Web Browser Simulator**: Interactive Chrome-like environment for tabs and bookmarks.
+- **MS Office Suite Simulators**:
+  - Excel: Formula bar with auto-grading for `=SUM()`, basic math, and `MAX()`.
+  - Word: Interactive ribbon for Text Emphasis (Bold) and Paragraph Alignment.
+  - PowerPoint: Slide creation (Ctrl+M) and Presentation Mode (F5).
+
+### 👨‍💻 In-Browser Programming IDEs
+- Python (via Pyodide): Runs entirely in the browser using WebAssembly.
+- C, C++, Java (via Piston API): Remote compilation and execution with real-time terminal output.
+- Auto-Grading: Hidden test cases evaluate code output and update progress.
+
+### 📈 Student Analytics & Gamification
+- Curriculum Heatmap: GitHub-style contribution grid tracking mastered vs. locked topics.
+- Advanced Metrics: Real-time progress percentage and AI-quiz accuracy.
+- Seamless Authentication: 1-click Google OAuth login.
 
 ---
 
-## 🛠️ Tech Stack
-- **Framework**: FastAPI + Uvicorn  
-- **Model**: Qwen 2.5 3B Instruct (Fine‑Tuned with LoRA)  
-- **Libraries**: torch, transformers, peft, accelerate  
-- **Python Version**: 3.11 (Recommended for stability)  
+## 🛠️ Technology Stack
+
+**Frontend**  
+- HTML5, CSS3, Vanilla JavaScript  
+- Tailwind CSS (Modern, responsive UI)  
+- Web Speech API (TTS/STT)  
+
+**Main Backend (Web App)**  
+- Django (Python Web Framework)  
+- SQLite / PostgreSQL  
+- Django Allauth (Google OAuth Integration)  
+
+**AI Backend (Inference Server)**  
+- FastAPI (High-performance API)  
+- PyTorch & Transformers (Hugging Face)  
+- Hardware Auto-Detection (CUDA/CPU)  
+
+**External Tools**  
+- Pyodide: WebAssembly Python environment  
+- Piston API: Code execution engine for C, C++, Java  
 
 ---
 
 ## 📂 Project Structure
+
 ```
-fastapi_slm/
+TechStart/
 │
-├── /SLM_Sample            # Fine‑tuned model files
-│   ├── adapter_config.json
-│   ├── adapter_model.safetensors
-│   ├── tokenizer.json
-│   └── ... (other model files)
+├── fastapi_slm/           # AI Tutor Backend
+│   ├── SLM_Sample         # Fine-tuned model files
+│   ├── main.py            # FastAPI application
+│   ├── requirements.txt   # Dependencies
+│   └── test_api.py        # API verification script
 │
-├── main.py                # FastAPI application
-├── requirements.txt       # Dependencies list
-├── test_api.py            # API verification script
-└── README.md              # Documentation
+├── django_app/            # Main LMS Web App
+│   ├── manage.py
+│   ├── requirements.txt
+│   └── ...
 ```
 
 ---
 
-## ⚙️ Installation
+## ⚙️ Local Installation & Setup
 
-### 1. Prerequisites
-- Ensure **Python 3.11** is installed.  
-  *(Note: Python 3.13 is currently incompatible with many AI libraries).*
+This project uses a **Dual-Server Architecture**. You need to run both the Django Web Server and the FastAPI AI Server.
 
-### 2. Create a Virtual Environment
+### 1. Clone the Repository
 ```bash
-# Windows
-python -m venv myenv3_11
-myenv3_11\Scripts\activate
-
-# Mac/Linux
-python3 -m venv myenv3_11
-source myenv3_11/bin/activate
+git clone https://github.com/yourusername/TechStart.git
+cd TechStart
 ```
 
-### 3. Install Dependencies
-**For CPU Only (Standard Laptop):**
-```bash
-pip install torch --index-url https://download.pytorch.org/whl/cpu
-pip install -r requirements.txt
-```
-
-**For NVIDIA GPU:**
-```bash
-pip install torch --index-url https://download.pytorch.org/whl/cu121
-pip install -r requirements.txt
-```
-
-> 💡 If you encounter `PreTrainedModel` import errors:  
-> Run:
-> ```bash
-> pip uninstall transformers peft -y
-> pip install transformers peft
-> ```
-
----
-
-## 🏃‍♂️ How to Run
-
-Navigate to the project directory:
+### 2. Setup the AI Inference Server (FastAPI)
 ```bash
 cd fastapi_slm
-```
+python -m venv venv
+# Activate venv
+# Windows: venv\Scripts\activate
+# Mac/Linux: source venv/bin/activate
 
-Start the server:
-```bash
+pip install fastapi uvicorn pydantic transformers
+# For GPU support:
+pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+
 uvicorn main:app --reload --port 8001
 ```
 
-Wait for logs to confirm:
+### 3. Setup the Main Web App (Django)
+```bash
+cd django_app
+python -m venv venv
+# Activate venv
+# Windows: venv\Scripts\activate
+# Mac/Linux: source venv/bin/activate
+
+pip install -r requirements.txt
+
+# Setup Environment Variables
+# Create a .env file based on .env.example and add SECRET_KEY + Google OAuth Keys.
+
+python manage.py makemigrations
+python manage.py migrate
+python manage.py createsuperuser
+python manage.py runserver
 ```
-✅ Model Loaded Successfully!
-Application startup complete.
-```
+
+Visit [http://127.0.0.1:8000](http://127.0.0.1:8000). The platform will automatically communicate with the FastAPI server on port 8001.
 
 ---
 
-## 🔌 API Usage
+## 🔌 API Usage (AI Tutor Backend)
 
 **Endpoint:** `POST /generate`
 
@@ -122,19 +152,9 @@ Application startup complete.
 ### Example Response
 ```json
 {
-  "response": "Python Variables म्हणजे काय? \n\nसमजा तुमच्याकडे एक डबा (box) आहे ज्यावर तुम्ही 'Score' असे नाव लिहिले आहे..."
+  "response": "Python Variables म्हणजे काय? ... (explanation in Marathi)"
 }
 ```
-
----
-
-## 🎯 Modes Explained
-
-| Mode   | Purpose                  | Required Fields                          |
-|--------|--------------------------|------------------------------------------|
-| teach  | Explains a concept       | mode, topic, language                     |
-| quiz   | Generates MCQs           | mode, topic, language                     |
-| grade  | Evaluates user answers   | mode, topic, language, user_input         |
 
 ---
 
@@ -145,18 +165,18 @@ Verify API is running:
 python test_api.py
 ```
 
-Or open Swagger UI in your browser:  
-👉 [http://localhost:8000/docs](http://localhost:8000/docs)
+Or open Swagger UI:  
+👉 `http://localhost:8001/docs` [(localhost in Bing)](https://www.bing.com/search?q="http%3A%2F%2Flocalhost%3A8001%2Fdocs")
 
 ---
 
 ## 🐛 Troubleshooting
 
 - **Error:** `NotImplementedError: Unsloth currently only works on NVIDIA...`  
-  **Fix:** You are trying to use `unsloth` on CPU. Switch `main.py` to use `AutoModelForCausalLM` and `peft`.
+  **Fix:** Switch to `AutoModelForCausalLM` with `peft` for CPU.
 
 - **Error:** `ImportError: cannot import name 'PreTrainedModel'`  
-  **Fix:** Your libraries are corrupted. Run:
+  **Fix:**  
   ```bash
   pip uninstall transformers peft accelerate -y
   pip cache purge
@@ -164,10 +184,32 @@ Or open Swagger UI in your browser:
   ```
 
 - **Slow Response?**  
-  - On CPU: 10–40 seconds (normal).  
-  - On GPU: <2 seconds.
+  - CPU: 10–40 seconds (normal).  
+  - GPU: <2 seconds.
 
 ---
 
-## 📜 License
+## 📸 Screenshots
+(Add high-quality screenshots before submission)
+- AI Chat Interface  
+- Fake Windows/Excel Simulation  
+- Python/C++ Web IDE  
+- Analytics Dashboard & Heatmap  
 
+---
+
+## 📝 License
+This project was developed for educational purposes as a Major University Project.
+
+---
+
+
+
+Empowering beginners to master technology through personalized, AI-driven education.
+```
+
+---
+
+This updated README keeps all the **new LMS details** while integrating the **old backend-specific gems** (modes, API usage, troubleshooting). It’s now comprehensive and GitHub‑ready.  
+
+Would you like me to also craft a **shorter “About” section** for the repo front page (like a tagline + badges) so visitors instantly see what TechStart is without scrolling?
