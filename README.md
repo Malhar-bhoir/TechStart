@@ -189,12 +189,7 @@ Or open Swagger UI:
 
 ---
 
-## 📸 Screenshots
-(Add high-quality screenshots before submission)
-- AI Chat Interface  
-- Fake Windows/Excel Simulation  
-- Python/C++ Web IDE  
-- Analytics Dashboard & Heatmap  
+  
 
 ---
 
