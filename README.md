@@ -1,12 +1,10 @@
 
 
----
-
 
 # 🚀 TechStart: AI-Powered Interactive Learning
 
-TechStart is a next-generation, AI-driven Learning Management System (LMS) developed as a Major Project.  
-It bridges the gap between theoretical learning and practical execution. Unlike traditional platforms, TechStart features a custom Fine-Tuned Small Language Model (SLM), browser-based OS/Office simulations, and in-browser coding IDEs to allow users to practice real-world skills instantly.
+TechStart is a next-generation, AI-driven **Learning Management System (LMS)** developed as a Major Project.  
+It bridges the gap between theoretical learning and practical execution. Unlike traditional platforms, TechStart features a custom Fine-Tuned **Small Language Model (SLM)**, browser-based OS/Office simulations, and in-browser coding IDEs to allow users to practice real-world skills instantly.
 
 ---
 
@@ -66,6 +64,29 @@ It bridges the gap between theoretical learning and practical execution. Unlike 
 **External Tools**  
 - Pyodide: WebAssembly Python environment  
 - Piston API: Code execution engine for C, C++, Java  
+- Ngrok: Secure tunneling for live demos  
+
+---
+
+## 🧠 Brain & LLM Pipeline
+
+### 1. Dataset & Preparation
+- `maindataset_v2_cleaned.jsonl` with 3,138 curated multilingual educational samples.  
+- Instruction-response pairs across English, Hindi, Marathi.  
+
+### 2. Fine-Tuning Framework (LoRA Config)
+- Base: Qwen2.5-3B-Instruct  
+- LoRA Rank: 16 | Alpha: 32 | Dropout: 0.05 | Precision: fp16  
+- Optimizer: `paged_adamw_8bit`  
+- Training: 2 epochs, LR = 2e-4, loss = 0.7038  
+
+### 3. Evaluation Benchmarks
+| Metric | Base Model | Fine-Tuned Model | Outcome |
+|--------|------------|------------------|---------|
+| Exact Matching Accuracy | 100% | 100% | Perfect preservation |
+| Avg. Generation Time | 13.19s | 12.07s | 8.47% faster |
+| ROUGE-L | 0.139 | 0.107 | Concise explanations |
+| BLEU | 0.014 | 0.010 | Better learning layout formatting |
 
 ---
 
@@ -136,6 +157,14 @@ Visit [http://127.0.0.1:8000](http://127.0.0.1:8000). The platform will automati
 
 ---
 
+## 🔌 Live Remote Staging (Ngrok Tunneling)
+```bash
+ngrok http 8000
+```
+Broadcasts your local host for distributed evaluations or public review panels.
+
+---
+
 ## 🔌 API Usage (AI Tutor Backend)
 
 **Endpoint:** `POST /generate`
@@ -166,7 +195,7 @@ python test_api.py
 ```
 
 Or open Swagger UI:  
-👉 `http://localhost:8001/docs` [(localhost in Bing)](https://www.bing.com/search?q="http%3A%2F%2Flocalhost%3A8001%2Fdocs")
+👉 `http://localhost:8001/docs`
 
 ---
 
@@ -189,17 +218,8 @@ Or open Swagger UI:
 
 ---
 
-  
-
----
-
 ## 📝 License
-This project was developed for educational purposes as a Major University Project.
-MIT License 
----
+This project was developed for educational purposes as a Major University Project.  
+MIT License  
 
-
-```
-
----
 
